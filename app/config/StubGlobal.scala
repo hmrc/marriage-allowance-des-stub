@@ -18,12 +18,10 @@ package config
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
-import connectors.ServiceLocatorConnector
 import net.ceedubs.ficus.Ficus._
 import play.api.Mode.Mode
 import play.api.Play.current
 import play.api._
-import uk.gov.hmrc.api.connector.ServiceLocatorConnector
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.hooks.HttpHooks
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -80,16 +78,9 @@ object StubGlobal extends DefaultMicroserviceGlobal with RunMode with Microservi
   override val auditConnector = MicroserviceAuditConnector
   override val authFilter = None
 
-  lazy val slConnector: ServiceLocatorConnector = ServiceLocatorConnector
-  lazy val registrationEnabled = runModeConfiguration.getBoolean("microservice.services.service-locator.enabled").getOrElse(true)
-
   override def onStart(app: Application): Unit = {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     super.onStart(app)
-    if(registrationEnabled)
-      slConnector.register
-    else
-      Logger.info("Registration in Service Locator is disabled")
   }
 
   override def microserviceMetricsConfig(implicit app: Application) = app.configuration.getConfig("microservice.metrics")

@@ -53,10 +53,7 @@ class PlatformIntegrationSpec extends UnitSpec with ScalaFutures with BeforeAndA
     .configure("run.mode" -> "Stub")
     .configure(Map(
       "appName" -> "application-name",
-      "appUrl" -> "http://microservice-name.protected.mdtp",
-      "microservice.services.service-locator.host" -> stubHost,
-      "microservice.services.service-locator.port" -> stubPort,
-      "microservice.services.service-locator.enabled" -> true
+      "appUrl" -> "http://microservice-name.protected.mdtp"
     )).in(Mode.Test).build()
 
   override def beforeEach() {
@@ -71,15 +68,6 @@ class PlatformIntegrationSpec extends UnitSpec with ScalaFutures with BeforeAndA
   }
 
   "microservice" should {
-
-    "register itelf to service-locator" in new Setup {
-      def regPayloadStringFor(serviceName: String, serviceUrl: String): String =
-        Json.toJson(Registration(serviceName, serviceUrl, Some(Map("third-party-api" -> "true")))).toString
-
-      verify(1, postRequestedFor(urlMatching("/registration")).
-        withHeader("content-type", equalTo("application/json")).
-        withRequestBody(equalTo(regPayloadStringFor("application-name", "http://microservice-name.protected.mdtp"))))
-    }
 
     "provide definition endpoint" in new Setup {
       val result = documentationController.definition()(request)
