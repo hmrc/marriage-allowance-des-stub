@@ -77,12 +77,7 @@ object StubGlobal extends DefaultMicroserviceGlobal with RunMode with Microservi
   override val microserviceAuditFilter = MicroserviceAuditFilter
   override val auditConnector = MicroserviceAuditConnector
   override val authFilter = None
-
-  override def onStart(app: Application): Unit = {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-    super.onStart(app)
-  }
-
+  
   override def microserviceMetricsConfig(implicit app: Application) = app.configuration.getConfig("microservice.metrics")
 
 }
