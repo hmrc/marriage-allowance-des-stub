@@ -1,5 +1,9 @@
-GET   /marriage-allowance/individual/:utr/status                    @controllers.MarriageAllowanceStatusControllerImpl.find(utr: uk.gov.hmrc.domain.SaUtr, taxYearStart: String)
-POST  /sa/:utr/status/:taxYear                                      @controllers.MarriageAllowanceStatusControllerImpl.create(utr: uk.gov.hmrc.domain.SaUtr, taxYear: models.TaxYear)
+#TODO remove also method and test marked as deprecated
+GET         /marriage-allowance/individual/:utr/status           @controllers.MarriageAllowanceStatusControllerImpl.find(utr: uk.gov.hmrc.domain.SaUtr, taxYearStart: String)
+POST        /marriage-allowance/individual/:utr/status           @controllers.MarriageAllowanceStatusControllerImpl.find(utr: uk.gov.hmrc.domain.SaUtr, taxYearStart: String)
+POST        /sa/:utr/status/:taxYear                             @controllers.MarriageAllowanceStatusControllerImpl.create(utr: uk.gov.hmrc.domain.SaUtr, taxYear: models.TaxYear)
 
-GET   /marriage-allowance/citizen/:nino/eligibility                 @controllers.MarriageAllowanceEligibilityControllerImpl.find(nino: uk.gov.hmrc.domain.Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String)
-POST  /nino/:nino/eligibility/:taxYear                              @controllers.MarriageAllowanceEligibilityControllerImpl.create(nino: uk.gov.hmrc.domain.Nino, taxYear: models.TaxYear)
+#TODO remove also method and test marked as deprecated
+GET         /marriage-allowance/citizen/:nino/eligibility        @controllers.MarriageAllowanceEligibilityControllerImpl.find(nino: uk.gov.hmrc.domain.Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String)
+POST        /marriage-allowance/citizen/:nino/eligibility        @controllers.MarriageAllowanceEligibilityControllerImpl.find(nino: uk.gov.hmrc.domain.Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String)
+POST        /nino/:nino/eligibility/:taxYear                     @controllers.MarriageAllowanceEligibilityControllerImpl.create(nino: uk.gov.hmrc.domain.Nino, taxYear: models.TaxYear)

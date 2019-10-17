@@ -55,6 +55,7 @@ trait IntegrationTest extends FeatureSpec with BeforeAndAfterAll with BeforeAndA
     ApiPlatformTestUserStub.server.stop()
   }
 
+  @Deprecated
   def getEndpoint(endpoint: String) =
     Http(s"$serviceUrl/$endpoint")
       .asString
@@ -65,5 +66,12 @@ trait IntegrationTest extends FeatureSpec with BeforeAndAfterAll with BeforeAndA
       .header(HeaderNames.CONTENT_TYPE, "application/json")
       .header(HeaderNames.ACCEPT, "application/vnd.hmrc.1.0+json")
       .postData(payload)
+      .asString
+
+  def postEndpoint(endpoint: String) =
+    Http(s"$serviceUrl/$endpoint")
+      .method("POST")
+      .header(HeaderNames.CONTENT_TYPE, "application/json")
+      .header(HeaderNames.ACCEPT, "application/vnd.hmrc.1.0+json")
       .asString
 }
