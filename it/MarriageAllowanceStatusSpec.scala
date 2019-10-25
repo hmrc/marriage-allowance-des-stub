@@ -46,5 +46,5 @@ class MarriageAllowanceStatusSpec extends IntegrationTest {
     postEndpoint(s"sa/$utr/status/$taxYear", payload)
 
   private def fetchMarriageAllowanceStatus(utr: String, taxYearStart: String) =
-    postEndpoint(s"marriage-allowance/individual/$utr/status?taxYearStart=$taxYearStart")
+    getEndpoint(s"marriage-allowance/individual/$utr/status?taxYearStart=$taxYearStart")
 }

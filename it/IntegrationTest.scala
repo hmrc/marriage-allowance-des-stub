@@ -21,10 +21,10 @@ import org.scalatestplus.play.OneServerPerSuite
 import play.api.Application
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
+import scalaj.http.{Http, HttpResponse}
 import stubs.ApiPlatformTestUserStub
 
 import scala.concurrent.duration.Duration
-import scalaj.http.Http
 
 trait IntegrationTest extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers with OneServerPerSuite with GivenWhenThen {
   override lazy val port = 9000
@@ -40,38 +40,30 @@ trait IntegrationTest extends FeatureSpec with BeforeAndAfterAll with BeforeAndA
   val timeout = Duration(5, TimeUnit.SECONDS)
   val serviceUrl = s"http://localhost:$port"
 
-  override def beforeAll() = {
+  override def beforeAll(): Unit = {
     super.beforeAll()
     ApiPlatformTestUserStub.server.start()
   }
 
-  override def beforeEach() = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     ApiPlatformTestUserStub.server.resetMappings()
   }
 
-  override def afterAll() = {
+  override def afterAll(): Unit = {
     super.afterAll()
     ApiPlatformTestUserStub.server.stop()
   }
 
-  @Deprecated
-  def getEndpoint(endpoint: String) =
+  def getEndpoint(endpoint: String): HttpResponse[String] =
     Http(s"$serviceUrl/$endpoint")
       .asString
 
-  def postEndpoint(endpoint: String, payload: String) =
+  def postEndpoint(endpoint: String, payload: String, version: String = "1.0"): HttpResponse[String] = {
     Http(s"$serviceUrl/$endpoint")
-      .method("POST")
-      .header(HeaderNames.CONTENT_TYPE, "application/json")
-      .header(HeaderNames.ACCEPT, "application/vnd.hmrc.1.0+json")
       .postData(payload)
-      .asString
-
-  def postEndpoint(endpoint: String) =
-    Http(s"$serviceUrl/$endpoint")
-      .method("POST")
       .header(HeaderNames.CONTENT_TYPE, "application/json")
-      .header(HeaderNames.ACCEPT, "application/vnd.hmrc.1.0+json")
+      .header(HeaderNames.ACCEPT, s"application/vnd.hmrc.$version+json")
       .asString
+  }
 }

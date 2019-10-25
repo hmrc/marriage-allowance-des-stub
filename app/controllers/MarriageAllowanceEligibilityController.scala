@@ -16,33 +16,49 @@
 
 package controllers
 
-import javax.inject.Inject
-
 import common.StubResource
+import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc._
 import services.{MarriageAllowanceEligibilityService, MarriageAllowanceEligibilityServiceImpl}
-import uk.gov.hmrc.api.controllers.HeaderValidator
+import uk.gov.hmrc.api.controllers.{ErrorInternalServerError, ErrorNotFound, HeaderValidator}
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.http.NotFoundException
+import scala.concurrent.Future
 
 trait MarriageAllowanceEligibilityController extends BaseController with StubResource with HeaderValidator {
   val service: MarriageAllowanceEligibilityService
 
+  private val acceptHeaderValidationRulesWithoutVersion: Option[String] => Boolean =
+    _ flatMap (a => matchHeader(a) map (res => validateContentType(res.group("contenttype")))) getOrElse (false)
+
+
+  final def findEligible = validateAccept(acceptHeaderValidationRulesWithoutVersion).async(parse.json) { implicit request =>
+    withJsonBody[EligibilityRequest] { eligibilityRequest =>
+      findEligibleBasedOnRequest(eligibilityRequest) map {
+        case Some(res) => Ok(Json.toJson(MarriageAllowanceEligibilitySummaryResponse(res.eligible)))
+        case _ => Status(ErrorNotFound.httpStatusCode)(Json.toJson(ErrorNotFound))
+      } recover fromFailure
+    }
+  }
+
+  private final def findEligibleBasedOnRequest(eligibilityRequest: EligibilityRequest): Future[Option[MarriageAllowanceEligibilitySummary]] = {
+    service.fetch(eligibilityRequest.nino,
+      eligibilityRequest.firstname,
+      eligibilityRequest.surname,
+      eligibilityRequest.taxYear)
+  }
+
   final def find(nino: Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String) = Action async {
-    service.fetch(nino, firstname, surname, dateOfBirth, taxYearStart) map {
+    service.fetch(nino, firstname, surname, taxYearStart) map {
       case Some(result) => Ok(Json.toJson(MarriageAllowanceEligibilitySummaryResponse(result.eligible)))
       case _ => NotFound
-    } recover {
-      case e =>
-        Logger.error("An error occurred while finding test data", e)
-        InternalServerError
-    }
+    } recover fromFailure
   }
 
   final def create(nino: Nino, taxYear: TaxYear) = validateAccept(acceptHeaderValidationRules).async(parse.json) { implicit request =>
@@ -52,12 +68,19 @@ trait MarriageAllowanceEligibilityController extends BaseController with StubRes
       } yield Created(Json.toJson(MarriageAllowanceEligibilitySummaryResponse(result.eligible)))
 
     } recover {
-      case e: NotFoundException =>
+      case _: NotFoundException =>
         NotFound(JsonErrorResponse("TEST_USER_NOT_FOUND", "No test individual exists with the specified National Insurance number"))
       case e  =>
         Logger.error("An error occurred while creating test data", e)
         InternalServerError
     }
+  }
+
+    private def fromFailure: PartialFunction[Throwable, Result] = {
+      case _: NotFoundException => Status(ErrorNotFound.httpStatusCode)(Json.toJson(ErrorNotFound))
+      case e: Throwable =>
+        Logger.error("An error occurred while finding test data", e)
+        Status(ErrorInternalServerError.httpStatusCode)(Json.toJson(ErrorInternalServerError))
   }
 }
 

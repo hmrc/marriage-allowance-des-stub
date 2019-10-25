@@ -20,10 +20,10 @@ import connectors.ApiPlatformTestUserConnector
 import models.MarriageAllowanceEligibilitySummary
 import repositories.MarriageAllowanceEligibilityRepository
 import uk.gov.hmrc.domain.Nino
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait MarriageAllowanceEligibilityService {
   val repository: MarriageAllowanceEligibilityRepository
@@ -38,7 +38,7 @@ trait MarriageAllowanceEligibilityService {
     } yield eligibilitySummary
   }
 
-  def fetch(nino: Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = {
+  def fetch(nino: Nino, firstname: String, surname: String, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = {
     repository.fetch(nino.nino, taxYearStart)
   }
 }
