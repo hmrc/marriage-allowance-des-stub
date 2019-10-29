@@ -3,5 +3,5 @@ POST        /sa/:utr/status/:taxYear                             @controllers.Ma
 
 #TODO remove also method and test marked as deprecated
 GET         /marriage-allowance/citizen/:nino/eligibility        @controllers.MarriageAllowanceEligibilityControllerImpl.find(nino: uk.gov.hmrc.domain.Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String)
-POST        /marriage-allowance/citizen/eligibility              @controllers.MarriageAllowanceEligibilityControllerImpl.findEligible()
+POST        /marriage-allowance/citizen/eligibility              @controllers.MarriageAllowanceEligibilityControllerImpl.findEligibility()
 POST        /nino/:nino/eligibility/:taxYear                     @controllers.MarriageAllowanceEligibilityControllerImpl.create(nino: uk.gov.hmrc.domain.Nino, taxYear: models.TaxYear)

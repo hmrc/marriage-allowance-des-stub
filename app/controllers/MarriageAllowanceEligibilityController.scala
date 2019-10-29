@@ -38,16 +38,16 @@ trait MarriageAllowanceEligibilityController extends BaseController with StubRes
     _ flatMap (a => matchHeader(a) map (res => validateContentType(res.group("contenttype")))) getOrElse (false)
 
 
-  final def findEligible = validateAccept(acceptHeaderValidationRulesWithoutVersion).async(parse.json) { implicit request =>
+  final def findEligibility = validateAccept(acceptHeaderValidationRulesWithoutVersion).async(parse.json) { implicit request =>
     withJsonBody[EligibilityRequest] { eligibilityRequest =>
-      findEligibleBasedOnRequest(eligibilityRequest) map {
+      findEligibilityBasedOnRequest(eligibilityRequest) map {
         case Some(res) => Ok(Json.toJson(MarriageAllowanceEligibilitySummaryResponse(res.eligible)))
         case _ => Status(ErrorNotFound.httpStatusCode)(Json.toJson(ErrorNotFound))
       } recover fromFailure
     }
   }
 
-  private final def findEligibleBasedOnRequest(eligibilityRequest: EligibilityRequest): Future[Option[MarriageAllowanceEligibilitySummary]] = {
+  private final def findEligibilityBasedOnRequest(eligibilityRequest: EligibilityRequest): Future[Option[MarriageAllowanceEligibilitySummary]] = {
     service.fetch(eligibilityRequest.nino, eligibilityRequest.taxYear)
   }
 
