@@ -38,7 +38,7 @@ trait MarriageAllowanceEligibilityService {
     } yield eligibilitySummary
   }
 
-  def fetch(nino: Nino, firstname: String, surname: String, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = {
+  def fetch(nino: Nino, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = {
     repository.fetch(nino.nino, taxYearStart)
   }
 }

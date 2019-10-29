@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
 
 class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
+
   trait Setup extends MicroserviceFilterSupport {
     val fetchRequest = FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")
     val createRequest = FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json").withBody[JsValue](Json.parse("""{"eligible":true}"""))
@@ -51,7 +52,7 @@ class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with O
   "fetch" should {
     "return the eligible response when called with a utr, AA000003D, firstname, surname, dateOfBirth and taxYear" in new Setup {
 
-      given(underTest.service.fetch(Nino("AA000003D"), "firstname", "surname", "2014")).willReturn(Future(Some(eligibleSummary)))
+      given(underTest.service.fetch(Nino("AA000003D"), "2014")).willReturn(Future(Some(eligibleSummary)))
 
       val result = await(underTest.find(Nino("AA000003D"), "firstname", "surname", "1981-01-31", "2014")(fetchRequest))
 
@@ -61,7 +62,7 @@ class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with O
 
     "return the ineligible response when called with a utr, AA000004C, firstname, surname, dateOfBirth and taxYear" in new Setup {
 
-      given(underTest.service.fetch(Nino("AA000003D"), "firstname", "surname", "2014")).willReturn(Future(Some(ineligibleSummary)))
+      given(underTest.service.fetch(Nino("AA000003D"), "2014")).willReturn(Future(Some(ineligibleSummary)))
 
       val result = await(underTest.find(Nino("AA000003D"), "firstname", "surname", "1981-01-31", "2014")(fetchRequest))
 

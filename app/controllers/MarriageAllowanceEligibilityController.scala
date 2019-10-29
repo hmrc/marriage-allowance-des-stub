@@ -48,14 +48,11 @@ trait MarriageAllowanceEligibilityController extends BaseController with StubRes
   }
 
   private final def findEligibleBasedOnRequest(eligibilityRequest: EligibilityRequest): Future[Option[MarriageAllowanceEligibilitySummary]] = {
-    service.fetch(eligibilityRequest.nino,
-      eligibilityRequest.firstname,
-      eligibilityRequest.surname,
-      eligibilityRequest.taxYear)
+    service.fetch(eligibilityRequest.nino, eligibilityRequest.taxYear)
   }
 
   final def find(nino: Nino, firstname: String, surname: String, dateOfBirth: String, taxYearStart: String) = Action async {
-    service.fetch(nino, firstname, surname, taxYearStart) map {
+    service.fetch(nino, taxYearStart) map {
       case Some(result) => Ok(Json.toJson(MarriageAllowanceEligibilitySummaryResponse(result.eligible)))
       case _ => NotFound
     } recover fromFailure
