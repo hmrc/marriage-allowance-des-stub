@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package services
+import com.google.inject.AbstractModule
+import repositories.{EligibilityRepositoryProvider, MarriageAllowanceEligibilityRepository, MarriageAllowanceStatusRepository, StatusRepositoryProvider}
 
-import com.google.inject.Inject
-import models.StatusSummary
-import repositories.MarriageAllowanceStatusRepository
-
-import scala.concurrent.Future
-
-class StatusService @Inject()(repository: MarriageAllowanceStatusRepository){
-  def create(utr: String, taxYear: String, status: String, deceased: Boolean): Future[StatusSummary] = {
-    repository.store(StatusSummary(utr, taxYear, status, deceased))
-  }
-
-  def fetch(utr: String, taxYear: String): Future[Option[StatusSummary]] = {
-    repository.fetch(utr, taxYear)
+class Module extends AbstractModule {
+  override def configure(): Unit = {
+    bind(classOf[MarriageAllowanceEligibilityRepository])
+      .toProvider(classOf[EligibilityRepositoryProvider])
+    bind(classOf[MarriageAllowanceStatusRepository])
+      .toProvider(classOf[StatusRepositoryProvider])
   }
 }

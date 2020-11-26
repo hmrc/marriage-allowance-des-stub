@@ -31,7 +31,7 @@ class ApiPlatformTestUserConnectorSpec extends UnitSpec with BeforeAndAfterEach 
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
-      "microservices.services.api-platform-test-user.port" -> ApiPlatformTestUserStub.port
+      "microservice.services.api-platform-test-user.port" -> ApiPlatformTestUserStub.port
     ).build()
 
   val nino = Nino("WC885133C")

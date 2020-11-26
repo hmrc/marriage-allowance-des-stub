@@ -19,14 +19,14 @@ package services
 import com.google.inject.Inject
 import connectors.ApiPlatformTestUserConnector
 import models.EligibilitySummary
-import repositories.EligibilityRepository
+import repositories.MarriageAllowanceEligibilityRepository
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EligibilityService @Inject()(
-                                    repository: EligibilityRepository,
+                                    repository: MarriageAllowanceEligibilityRepository,
                                     testUserConnector: ApiPlatformTestUserConnector
                                   )(implicit ec: ExecutionContext) {
 

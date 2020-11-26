@@ -61,7 +61,7 @@ class PlatformIntegrationSpec extends UnitSpec with ScalaFutures with BeforeAndA
   }
 
   trait Setup extends MicroserviceFilterSupport {
-    val documentationController = new DocumentationController(LazyHttpErrorHandler, new ApplicationConfig()) {}
+    val documentationController: DocumentationController = app.injector.instanceOf[DocumentationController]
     val request = FakeRequest()
   }
 

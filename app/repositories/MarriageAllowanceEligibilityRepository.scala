@@ -16,6 +16,7 @@
 
 package repositories
 
+import com.google.inject.Provider
 import models._
 import play.modules.reactivemongo.MongoDbConnection
 import reactivemongo.api.DB
@@ -24,10 +25,14 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-//TODO DI this
+
 trait MarriageAllowanceEligibilityRepository extends Repository[EligibilitySummary, BSONObjectID] {
   def store[T <: EligibilitySummary](marriageAllowanceEligibilitySummary: T): Future[T]
   def fetch(nino: String, taxYearStart: String): Future[Option[EligibilitySummary]]
+}
+
+class EligibilityRepositoryProvider extends Provider[MarriageAllowanceEligibilityRepository] {
+  override def get(): MarriageAllowanceEligibilityRepository = MarriageAllowanceEligibilityRepository()
 }
 
 object MarriageAllowanceEligibilityRepository extends MongoDbConnection {

@@ -36,14 +36,14 @@ import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
 
 class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
+  val mockElgibilityService: EligibilityService = mock[EligibilityService]
+
   trait Setup extends MicroserviceFilterSupport {
     val fetchRequest = FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")
     val createRequest = FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json").withBody[JsValue](Json.parse("""{"eligible":true}"""))
     implicit val headerCarrier = HeaderCarrier()
 
-    val underTest = new EligibilityController {
-      override val service: EligibilityService = mock[EligibilityService]
-    }
+    val underTest = new EligibilityController(mockElgibilityService)
 
     val eligibleSummary = EligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", true)
     val ineligibleSummary = EligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", false)
@@ -52,7 +52,7 @@ class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with O
   "create" should {
     "return a CREATED response when successful" in new Setup {
 
-      given(underTest.service.create(ArgumentMatchers.eq(Nino("AA000003D")), ArgumentMatchers.eq("2017"), ArgumentMatchers.eq(true))(any())).willReturn(Future.successful(eligibleSummary))
+      given(mockElgibilityService.create(ArgumentMatchers.eq(Nino("AA000003D")), ArgumentMatchers.eq("2017"), ArgumentMatchers.eq(true))(any())).willReturn(Future.successful(eligibleSummary))
 
       val result = await(underTest.create(Nino("AA000003D"), TaxYear("2017-18"))(createRequest))
 
@@ -62,7 +62,7 @@ class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with O
 
     "return a TEST_USER_NOT_FOUND response when an unknown NINO is specified" in new Setup {
 
-      given(underTest.service.create(ArgumentMatchers.eq(Nino("AA000003D")), ArgumentMatchers.eq("2017"), ArgumentMatchers.eq(true))(any())).willReturn(Future.failed(new NotFoundException("Expected test error")))
+      given(mockElgibilityService.create(ArgumentMatchers.eq(Nino("AA000003D")), ArgumentMatchers.eq("2017"), ArgumentMatchers.eq(true))(any())).willReturn(Future.failed(new NotFoundException("Expected test error")))
 
       val result = await(underTest.create(Nino("AA000003D"), TaxYear("2017-18"))(createRequest))
 

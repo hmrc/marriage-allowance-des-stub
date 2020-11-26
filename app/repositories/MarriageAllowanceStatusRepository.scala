@@ -16,6 +16,7 @@
 
 package repositories
 
+import com.google.inject.Provider
 import models._
 import play.modules.reactivemongo.MongoDbConnection
 import reactivemongo.api.DB
@@ -24,7 +25,7 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-//TODO DI with library upgrade
+
 trait MarriageAllowanceStatusRepository extends Repository[StatusSummary, BSONObjectID] {
   def store[T <: StatusSummary](marriageAllowanceStatusSummary: T): Future[T]
   def fetch(utr: String, taxYear: String): Future[Option[StatusSummary]]
@@ -33,6 +34,10 @@ trait MarriageAllowanceStatusRepository extends Repository[StatusSummary, BSONOb
 object MarriageAllowanceStatusRepository extends MongoDbConnection {
   private lazy val repository = new StatusRepository
   def apply(): MarriageAllowanceStatusRepository = repository
+}
+
+class StatusRepositoryProvider extends Provider[MarriageAllowanceStatusRepository] {
+  override def get(): MarriageAllowanceStatusRepository = MarriageAllowanceStatusRepository()
 }
 
 class StatusRepository(implicit mongo: () => DB) extends ReactiveRepository[StatusSummary, BSONObjectID]("marriage-allowance-status", mongo,

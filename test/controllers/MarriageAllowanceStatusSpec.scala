@@ -33,6 +33,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
 
 class MarriageAllowanceStatusSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
+
+  val mockStatusService: StatusService = mock[StatusService]
   trait Setup extends MicroserviceFilterSupport {
     val jsonBody = Json.parse(
       """
@@ -47,9 +49,7 @@ class MarriageAllowanceStatusSpec extends UnitSpec with MockitoSugar with OneApp
 
     implicit val headerCarrier = HeaderCarrier()
 
-    val underTest = new StatusController {
-      override val service: StatusService = mock[StatusService]
-    }
+    val underTest = new StatusController(mockStatusService)
 
     val deceasedStatusSummary = StatusSummary("utr", "2014", "Recipient", true)
   }
@@ -58,7 +58,7 @@ class MarriageAllowanceStatusSpec extends UnitSpec with MockitoSugar with OneApp
 
     "return the response when called with a utr and taxYear" in new Setup {
 
-      given(underTest.service.fetch("utr", "2014")).willReturn(Future(Some(deceasedStatusSummary)))
+      given(mockStatusService.fetch("utr", "2014")).willReturn(Future(Some(deceasedStatusSummary)))
 
       val result = await(underTest.find(SaUtr("utr"), "2014")(fetchRequest))
 
@@ -71,7 +71,7 @@ class MarriageAllowanceStatusSpec extends UnitSpec with MockitoSugar with OneApp
 
     "return a CREATED response with payload matching the request" in new Setup {
 
-      given(underTest.service.create("utr", "2014", "Recipient", true)).willReturn(Future(deceasedStatusSummary))
+      given(mockStatusService.create("utr", "2014", "Recipient", true)).willReturn(Future(deceasedStatusSummary))
 
       val result = await(underTest.create(SaUtr("utr"), TaxYear("2014-15"))(createRequest))
 
