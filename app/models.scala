@@ -21,10 +21,10 @@ package object models {
   implicit val objectIdFormat = ReactiveMongoFormats.objectIdFormats
   implicit val marriageAllowanceStatusCreationRequest = Json.format[MarriageAllowanceStatusCreationRequest]
   implicit val marriageAllowanceStatusSummaryResponseFormat = Json.format[MarriageAllowanceStatusSummaryResponse]
-  implicit val marriageAllowanceStatusSummaryFormat = Json.format[MarriageAllowanceStatusSummary]
+  implicit val marriageAllowanceStatusSummaryFormat = Json.format[StatusSummary]
   implicit val marriageAllowanceEligibilityCreationRequest = Json.format[MarriageAllowanceEligibilityCreationRequest]
   implicit val marriageAllowanceEligibilitySummaryResponseFormat = Json.format[MarriageAllowanceEligibilitySummaryResponse]
-  implicit val marriageAllowanceEligibilitySummaryFormat = Json.format[MarriageAllowanceEligibilitySummary]
+  implicit val marriageAllowanceEligibilitySummaryFormat = Json.format[EligibilitySummary]
 
   implicit val apiAccessFormat = Json.format[APIAccess]
 

@@ -16,34 +16,30 @@
 
 package services
 
+import com.google.inject.Inject
 import connectors.ApiPlatformTestUserConnector
-import models.MarriageAllowanceEligibilitySummary
-import repositories.MarriageAllowanceEligibilityRepository
+import models.EligibilitySummary
+import repositories.EligibilityRepository
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait MarriageAllowanceEligibilityService {
-  val repository: MarriageAllowanceEligibilityRepository
-  val testUserConnector: ApiPlatformTestUserConnector
+class EligibilityService @Inject()(
+                                    repository: EligibilityRepository,
+                                    testUserConnector: ApiPlatformTestUserConnector
+                                  )(implicit ec: ExecutionContext) {
 
-  def create(nino: Nino, taxYearStart: String, eligible: Boolean)(implicit hc: HeaderCarrier): Future[MarriageAllowanceEligibilitySummary] = {
+  def create(nino: Nino, taxYearStart: String, eligible: Boolean)(implicit hc: HeaderCarrier): Future[EligibilitySummary] = {
     for {
       individualDetails <- testUserConnector.fetchByNino(nino).map(_.individualDetails)
-      eligibilitySummary = MarriageAllowanceEligibilitySummary(nino.nino, taxYearStart, individualDetails.firstName,
+      eligibilitySummary = EligibilitySummary(nino.nino, taxYearStart, individualDetails.firstName,
         individualDetails.lastName, individualDetails.dateOfBirth.toString, eligible)
       _ <- repository.store(eligibilitySummary)
     } yield eligibilitySummary
   }
 
-  def fetch(nino: Nino, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = {
+  def fetch(nino: Nino, taxYearStart: String): Future[Option[EligibilitySummary]] = {
     repository.fetch(nino.nino, taxYearStart)
   }
-}
-
-class MarriageAllowanceEligibilityServiceImpl extends MarriageAllowanceEligibilityService {
-  override val repository: MarriageAllowanceEligibilityRepository = MarriageAllowanceEligibilityRepository()
-  override val testUserConnector: ApiPlatformTestUserConnector = ApiPlatformTestUserConnector
 }

@@ -16,23 +16,18 @@
 
 package services
 
-import models.{MarriageAllowanceStatusSummary, MarriageAllowanceStatusSummaryResponse}
-import repositories.MarriageAllowanceStatusRepository
+import com.google.inject.Inject
+import models.StatusSummary
+import repositories.StatusRepository
 
 import scala.concurrent.Future
 
-trait MarriageAllowanceStatusService {
-  val repository: MarriageAllowanceStatusRepository
-
-  def create(utr: String, taxYear: String, status: String, deceased: Boolean): Future[MarriageAllowanceStatusSummary] = {
-    repository.store(MarriageAllowanceStatusSummary(utr, taxYear, status, deceased))
+class StatusService @Inject()(repository: StatusRepository){
+  def create(utr: String, taxYear: String, status: String, deceased: Boolean): Future[StatusSummary] = {
+    repository.store(StatusSummary(utr, taxYear, status, deceased))
   }
 
-  def fetch(utr: String, taxYear: String): Future[Option[MarriageAllowanceStatusSummary]] = {
+  def fetch(utr: String, taxYear: String): Future[Option[StatusSummary]] = {
     repository.fetch(utr, taxYear)
   }
-}
-
-class MarriageAllowanceStatusServiceImpl extends MarriageAllowanceStatusService {
-  override val repository = MarriageAllowanceStatusRepository()
 }

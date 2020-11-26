@@ -1,5 +1,5 @@
-GET         /marriage-allowance/individual/:utr/status           @controllers.MarriageAllowanceStatusControllerImpl.find(utr: uk.gov.hmrc.domain.SaUtr, taxYearStart: String)
-POST        /sa/:utr/status/:taxYear                             @controllers.MarriageAllowanceStatusControllerImpl.create(utr: uk.gov.hmrc.domain.SaUtr, taxYear: models.TaxYear)
+GET         /marriage-allowance/individual/:utr/status           @controllers.StatusController.find(utr: uk.gov.hmrc.domain.SaUtr, taxYearStart: String)
+POST        /sa/:utr/status/:taxYear                             @controllers.StatusController.create(utr: uk.gov.hmrc.domain.SaUtr, taxYear: models.TaxYear)
 
-POST        /marriage-allowance/citizen/eligibility              @controllers.MarriageAllowanceEligibilityControllerImpl.findEligibility()
-POST        /nino/:nino/eligibility/:taxYear                     @controllers.MarriageAllowanceEligibilityControllerImpl.create(nino: uk.gov.hmrc.domain.Nino, taxYear: models.TaxYear)
+POST        /marriage-allowance/citizen/eligibility              @controllers.EligibilityController.findEligibility()
+POST        /nino/:nino/eligibility/:taxYear                     @controllers.EligibilityController.create(nino: uk.gov.hmrc.domain.Nino, taxYear: models.TaxYear)

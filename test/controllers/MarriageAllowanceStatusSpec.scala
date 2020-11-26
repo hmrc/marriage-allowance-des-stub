@@ -16,14 +16,14 @@
 
 package controllers
 
-import models.{MarriageAllowanceStatusSummary, TaxYear}
+import models.{StatusSummary, TaxYear}
 import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import services.MarriageAllowanceStatusService
+import services.StatusService
 import uk.gov.hmrc.domain.SaUtr
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -47,11 +47,11 @@ class MarriageAllowanceStatusSpec extends UnitSpec with MockitoSugar with OneApp
 
     implicit val headerCarrier = HeaderCarrier()
 
-    val underTest = new MarriageAllowanceStatusController {
-      override val service: MarriageAllowanceStatusService = mock[MarriageAllowanceStatusService]
+    val underTest = new StatusController {
+      override val service: StatusService = mock[StatusService]
     }
 
-    val deceasedStatusSummary = MarriageAllowanceStatusSummary("utr", "2014", "Recipient", true)
+    val deceasedStatusSummary = StatusSummary("utr", "2014", "Recipient", true)
   }
 
   "fetch" should {

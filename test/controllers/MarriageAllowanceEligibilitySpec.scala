@@ -16,7 +16,7 @@
 
 package controllers
 
-import models.{MarriageAllowanceEligibilitySummary, TaxYear}
+import models.{EligibilitySummary, TaxYear}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito.given
@@ -25,7 +25,7 @@ import org.scalatestplus.play.OneAppPerSuite
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
-import services.MarriageAllowanceEligibilityService
+import services.EligibilityService
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -41,12 +41,12 @@ class MarriageAllowanceEligibilitySpec extends UnitSpec with MockitoSugar with O
     val createRequest = FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json").withBody[JsValue](Json.parse("""{"eligible":true}"""))
     implicit val headerCarrier = HeaderCarrier()
 
-    val underTest = new MarriageAllowanceEligibilityController {
-      override val service: MarriageAllowanceEligibilityService = mock[MarriageAllowanceEligibilityService]
+    val underTest = new EligibilityController {
+      override val service: EligibilityService = mock[EligibilityService]
     }
 
-    val eligibleSummary = MarriageAllowanceEligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", true)
-    val ineligibleSummary = MarriageAllowanceEligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", false)
+    val eligibleSummary = EligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", true)
+    val ineligibleSummary = EligibilitySummary("nino", "2014", "firstname", "surname", "1980-01-31", false)
   }
 
   "create" should {

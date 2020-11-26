@@ -16,19 +16,20 @@
 
 package controllers
 
-import config.AppContext
+import config.ApplicationConfig
 import javax.inject.Inject
 import models.APIAccess
 import play.api.http.HttpErrorHandler
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import views.txt
 
-class DocumentationController @Inject()(httpErrorHandler: HttpErrorHandler, appContext: AppContext) extends AssetsBuilder(httpErrorHandler) with BaseController {
+class DocumentationController @Inject()(httpErrorHandler: HttpErrorHandler, appContext: ApplicationConfig) extends AssetsBuilder(httpErrorHandler) with BaseController {
 
-  def definition = Action {
+  def definition: Action[AnyContent] = Action {
     Ok(txt.definition(APIAccess.build(appContext.access))).withHeaders(CONTENT_TYPE -> JSON)
   }
 
-  final def raml(version: String, file: String) = super.at(s"/public/api/conf/$version", file)
+  final def raml(version: String, file: String): Action[AnyContent] =
+    super.at(s"/public/api/conf/$version", file)
 }

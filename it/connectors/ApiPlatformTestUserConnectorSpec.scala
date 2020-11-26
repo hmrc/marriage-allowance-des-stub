@@ -18,13 +18,21 @@ package connectors
 
 import models.{IndividualDetails, TestIndividual}
 import org.joda.time.LocalDate
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 import stubs.ApiPlatformTestUserStub
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, Upstream5xxResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
-class ApiPlatformTestUserConnectorSpec extends UnitSpec with BeforeAndAfterEach with WithFakeApplication {
+class ApiPlatformTestUserConnectorSpec extends UnitSpec with BeforeAndAfterEach with BeforeAndAfterAll with GuiceOneAppPerSuite {
+
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
+    .configure(
+      "microservices.services.api-platform-test-user.port" -> ApiPlatformTestUserStub.port
+    ).build()
 
   val nino = Nino("WC885133C")
   val individual = TestIndividual(nino, IndividualDetails("Heather", "Ling", LocalDate.parse("1983-09-18")))
@@ -32,9 +40,8 @@ class ApiPlatformTestUserConnectorSpec extends UnitSpec with BeforeAndAfterEach 
   trait Setup {
     implicit val hc = HeaderCarrier()
 
-    val underTest = new ApiPlatformTestUserConnector {
-      override lazy val serviceUrl = ApiPlatformTestUserStub.url
-    }
+    val underTest: ApiPlatformTestUserConnector =
+      app.injector.instanceOf[ApiPlatformTestUserConnector]
   }
 
   override def beforeAll() = {

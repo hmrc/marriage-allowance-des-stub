@@ -18,7 +18,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
-import config.AppContext
+import config.ApplicationConfig
 import controllers.DocumentationController
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, TestData}
@@ -61,7 +61,7 @@ class PlatformIntegrationSpec extends UnitSpec with ScalaFutures with BeforeAndA
   }
 
   trait Setup extends MicroserviceFilterSupport {
-    val documentationController = new DocumentationController(LazyHttpErrorHandler, new AppContext()) {}
+    val documentationController = new DocumentationController(LazyHttpErrorHandler, new ApplicationConfig()) {}
     val request = FakeRequest()
   }
 

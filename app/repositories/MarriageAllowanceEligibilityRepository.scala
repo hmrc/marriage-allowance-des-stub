@@ -24,24 +24,24 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-trait MarriageAllowanceEligibilityRepository extends Repository[MarriageAllowanceEligibilitySummary, BSONObjectID] {
-  def store[T <: MarriageAllowanceEligibilitySummary](marriageAllowanceEligibilitySummary: T): Future[T]
-  def fetch(nino: String, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]]
+//TODO DI this
+trait MarriageAllowanceEligibilityRepository extends Repository[EligibilitySummary, BSONObjectID] {
+  def store[T <: EligibilitySummary](marriageAllowanceEligibilitySummary: T): Future[T]
+  def fetch(nino: String, taxYearStart: String): Future[Option[EligibilitySummary]]
 }
 
 object MarriageAllowanceEligibilityRepository extends MongoDbConnection {
-  private lazy val repository = new MarriageAllowanceEligibilityMongoRepository
+  private lazy val repository = new EligibilityRepository
   def apply(): MarriageAllowanceEligibilityRepository = repository
 }
 
-class MarriageAllowanceEligibilityMongoRepository(implicit mongo: () => DB) extends ReactiveRepository[MarriageAllowanceEligibilitySummary, BSONObjectID]("marriage-allowance-eligibility", mongo,
+class EligibilityRepository(implicit mongo: () => DB) extends ReactiveRepository[EligibilitySummary, BSONObjectID]("marriage-allowance-eligibility", mongo,
   marriageAllowanceEligibilitySummaryFormat, objectIdFormat) with MarriageAllowanceEligibilityRepository {
-  override def store[T <: MarriageAllowanceEligibilitySummary](marriageAllowanceEligibilitySummary: T): Future[T] =
+  override def store[T <: EligibilitySummary](marriageAllowanceEligibilitySummary: T): Future[T] =
     for{
       _ <- remove("nino" -> marriageAllowanceEligibilitySummary.nino, "taxYearStart" -> marriageAllowanceEligibilitySummary.taxYearStart)
       _ <- insert(marriageAllowanceEligibilitySummary)
     } yield marriageAllowanceEligibilitySummary
 
-  override def fetch(nino: String, taxYearStart: String): Future[Option[MarriageAllowanceEligibilitySummary]] = find("nino" -> nino, "taxYearStart" -> taxYearStart) map(_.headOption)
+  override def fetch(nino: String, taxYearStart: String): Future[Option[EligibilitySummary]] = find("nino" -> nino, "taxYearStart" -> taxYearStart) map(_.headOption)
 }

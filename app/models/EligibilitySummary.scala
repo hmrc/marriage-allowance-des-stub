@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import play.api.Configuration
-import play.api.Play._
-
-class AppContext {
-  val configuration: Configuration = current.configuration
-  lazy val access: Option[Configuration] = configuration.getConfig("api.access")
-}
+final case class EligibilitySummary(nino: String, taxYearStart: String, firstname: String, surname: String, dateOfBirth: String, eligible: Boolean)

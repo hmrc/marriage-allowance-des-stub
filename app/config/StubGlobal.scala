@@ -17,13 +17,14 @@
 package config
 
 import akka.actor.ActorSystem
+import com.google.inject.{ImplementedBy, Inject}
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.Mode.Mode
 import play.api.Play.current
 import play.api._
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.hooks.HttpHooks
+import uk.gov.hmrc.http.hooks.{HttpHook, HttpHooks}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
@@ -32,24 +33,23 @@ import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
 import uk.gov.hmrc.play.microservice.config.LoadAuditingConfig
 import uk.gov.hmrc.play.microservice.filters.{AuditFilter, LoggingFilter, MicroserviceFilterSupport}
 
-trait Hooks extends HttpHooks {
-  override val hooks = NoneRequired
+trait Hooks extends HttpHooks { //TODO should this have auditing hook?
+  override val hooks: Seq[HttpHook] = NoneRequired
 }
 
-trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with Hooks with AppName {
-  override protected def actorSystem: ActorSystem = current.actorSystem
-  override protected def configuration: Option[Config] = Some(current.configuration.underlying)
-  override protected def appNameConfiguration: Configuration = current.configuration
-}
+@ImplementedBy(classOf[WSHttpImpl])
+trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete
 
-object WSHttp extends WSHttp
+class WSHttpImpl @Inject()(
+                        config: Configuration,
+                        val actorSystem: ActorSystem
+                      ) extends WSHttp with Hooks with AppName {
+  override protected def appNameConfiguration: Configuration = config
+  override protected def configuration: Option[Config] = Some(config.underlying)
+}
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = current.configuration.underlying.as[Config]("controllers")
-}
-
-object AuthParamsControllerConfiguration extends AuthParamsControllerConfig {
-  lazy val controllerConfigs = ControllerConfiguration.controllerConfigs
 }
 
 object MicroserviceAuditConnector extends AuditConnector {

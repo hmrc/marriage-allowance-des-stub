@@ -24,25 +24,25 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-trait MarriageAllowanceStatusRepository extends Repository[MarriageAllowanceStatusSummary, BSONObjectID] {
-  def store[T <: MarriageAllowanceStatusSummary](marriageAllowanceStatusSummary: T): Future[T]
-  def fetch(utr: String, taxYear: String): Future[Option[MarriageAllowanceStatusSummary]]
+//TODO DI with library upgrade
+trait MarriageAllowanceStatusRepository extends Repository[StatusSummary, BSONObjectID] {
+  def store[T <: StatusSummary](marriageAllowanceStatusSummary: T): Future[T]
+  def fetch(utr: String, taxYear: String): Future[Option[StatusSummary]]
 }
 
 object MarriageAllowanceStatusRepository extends MongoDbConnection {
-  private lazy val repository = new MarriageAllowanceStatusMongoRepository
+  private lazy val repository = new StatusRepository
   def apply(): MarriageAllowanceStatusRepository = repository
 }
 
-class MarriageAllowanceStatusMongoRepository(implicit mongo: () => DB) extends ReactiveRepository[MarriageAllowanceStatusSummary, BSONObjectID]("marriage-allowance-status", mongo,
+class StatusRepository(implicit mongo: () => DB) extends ReactiveRepository[StatusSummary, BSONObjectID]("marriage-allowance-status", mongo,
   marriageAllowanceStatusSummaryFormat, objectIdFormat) with MarriageAllowanceStatusRepository {
-  override def store[T <: MarriageAllowanceStatusSummary](marriageAllowanceStatusSummary: T): Future[T] =
+  override def store[T <: StatusSummary](marriageAllowanceStatusSummary: T): Future[T] =
     for{
       _ <- remove("utr" -> marriageAllowanceStatusSummary.utr, "taxYear" -> marriageAllowanceStatusSummary.taxYear)
       _ <- insert(marriageAllowanceStatusSummary)
     } yield marriageAllowanceStatusSummary
 
-  override def fetch(utr: String, taxYear: String): Future[Option[MarriageAllowanceStatusSummary]] =
+  override def fetch(utr: String, taxYear: String): Future[Option[StatusSummary]] =
     find("utr" -> utr, "taxYear" -> taxYear) map(_.headOption)
 }

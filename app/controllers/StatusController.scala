@@ -21,14 +21,15 @@ import models.{MarriageAllowanceStatusCreationRequest, MarriageAllowanceStatusSu
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent}
-import services.{MarriageAllowanceStatusService, MarriageAllowanceStatusServiceImpl}
+import services.StatusService
 import uk.gov.hmrc.domain.SaUtr
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
-trait MarriageAllowanceStatusController extends BaseController {
-  val service: MarriageAllowanceStatusService
+class StatusController @Inject()(
+                                  service: StatusService
+                                )(implicit ec: ExecutionContext) extends BaseController {
 
   final def find(utr: SaUtr, taxYearStart: String): Action[AnyContent] = Action.async {
     service.fetch(utr.utr, taxYearStart) map {
@@ -54,6 +55,3 @@ trait MarriageAllowanceStatusController extends BaseController {
     }
   }
 }
-
-final class MarriageAllowanceStatusControllerImpl @Inject()(override val service: MarriageAllowanceStatusServiceImpl)
-  extends MarriageAllowanceStatusController
