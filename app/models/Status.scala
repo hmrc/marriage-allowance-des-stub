@@ -16,13 +16,13 @@
 
 package models
 
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
+
+import java.time.format.DateTimeFormatter
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.Nino
-import play.api.libs.json.JodaWrites._
 
+import java.time.LocalDate
 import scala.util.Try
 
 case class Status(status: String, deceased: Boolean)
@@ -37,12 +37,11 @@ case class EligibilityRequest(nino: Nino, firstname: String, surname: String, da
 
 object EligibilityRequest extends ConstraintReads {
 
-  implicit val localDateRead: Reads[LocalDate] = new Reads[LocalDate] {
-    override def reads(json: JsValue): JsResult[LocalDate] = json match {
-      case JsString(dateOfBirth) if(Try(LocalDate.parse(dateOfBirth, DateTimeFormat.forPattern("yyyy-MM-dd"))).isSuccess) =>
-        JsSuccess(LocalDate.parse(dateOfBirth, DateTimeFormat.forPattern("yyyy-MM-dd")))
-      case _ => JsError("DOB_INVALID")
-    }
+
+  implicit val localDateRead: Reads[LocalDate] = (json: JsValue) => json match {
+    case JsString(dateOfBirth) if (Try(LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy-MM-dd"))).isSuccess) =>
+      JsSuccess(LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+    case _ => JsError("DOB_INVALID")
   }
 
   implicit val eligibilityRequestRead: Reads[EligibilityRequest] = (

@@ -16,8 +16,9 @@
 
 package models
 
-import org.joda.time.LocalDate
 import uk.gov.hmrc.domain.Nino
+
+import java.time.LocalDate
 
 case class IndividualDetails(firstName: String, lastName: String, dateOfBirth: LocalDate)
 

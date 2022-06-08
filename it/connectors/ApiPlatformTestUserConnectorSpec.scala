@@ -18,7 +18,8 @@ package connectors
 
 import it.utils.UnitSpec
 import models.{IndividualDetails, TestIndividual}
-import org.joda.time.LocalDate
+
+import java.time.LocalDate
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application

@@ -16,8 +16,6 @@
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
-import play.api.libs.json.JodaReads._
-import play.api.libs.json.JodaWrites._
 
 package object models {
   implicit val objectIdFormat = ReactiveMongoFormats.objectIdFormats
