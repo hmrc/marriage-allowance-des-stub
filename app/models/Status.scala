@@ -37,10 +37,11 @@ case class EligibilityRequest(nino: Nino, firstname: String, surname: String, da
 
 object EligibilityRequest extends ConstraintReads {
 
+  val datePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
   implicit val localDateRead: Reads[LocalDate] = (json: JsValue) => json match {
-    case JsString(dateOfBirth) if (Try(LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy-MM-dd"))).isSuccess) =>
-      JsSuccess(LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+    case JsString(dateOfBirth) if (Try(LocalDate.parse(dateOfBirth, datePattern)).isSuccess) =>
+      JsSuccess(LocalDate.parse(dateOfBirth, datePattern))
     case _ => JsError("DOB_INVALID")
   }
 
