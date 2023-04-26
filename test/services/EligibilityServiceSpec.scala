@@ -17,12 +17,12 @@
 package services
 
 import java.time.LocalDate
-
 import connectors.ApiPlatformTestUserConnector
 import models.{EligibilitySummary, IndividualDetails, TestIndividual}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.MarriageAllowanceEligibilityRepository
 import test.utils.MockitoMocking
 import uk.gov.hmrc.domain.Nino
@@ -56,7 +56,7 @@ class EligibilityServiceSpec extends PlaySpec with MockitoMocking with BeforeAnd
       when(mockConnector.fetchByNino(Nino("AA123456A"))).thenReturn(Future.successful(testIndividual))
       when(mockEligibilityRepo.store(eligibilitySummary)).thenReturn(Future.successful(eligibilitySummary))
 
-      testService.create(Nino("AA123456A"), "2020-21", true)
+      await(testService.create(Nino("AA123456A"), "2020-21", true))
 
       verify(mockEligibilityRepo, times(1)).store(eligibilitySummary)
     }
