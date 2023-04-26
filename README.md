@@ -18,7 +18,7 @@ to prime test data in order to test different scenarios
 * DES endpoints related to fetching marriage allowance data
 
 The test support endpoints exposed to the API Platform are documented in the
-[RAML definition](https://github.com/hmrc/marriage-allowance-des-stub/blob/master/resources/public/api/conf/1.0/application.raml)
+[OAS definition](https://github.com/hmrc/marriage-allowance-des-stub/blob/master/resources/public/api/conf/1.0/application.yaml)
 
 Internal users within HMRC can search Confluence for "Testing APIS with external parties" for further information.
 

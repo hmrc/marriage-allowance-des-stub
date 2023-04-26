@@ -29,6 +29,6 @@ class DocumentationController @Inject()(assets: Assets, appContext: ApplicationC
     Ok(txt.definition(APIAccess.build(appContext.access))).withHeaders(CONTENT_TYPE -> JSON)
   }
 
-  final def raml(version: String, file: String): Action[AnyContent] =
+  final def yaml(version: String, file: String): Action[AnyContent] =
     assets.at(s"/public/api/conf/$version", file)
 }

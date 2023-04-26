@@ -31,8 +31,8 @@ class DocumentationControllerSpec extends PlaySpec with GuiceOneAppPerSuite with
   lazy val controller: DocumentationController = inject[DocumentationController]
 
   "DocumentationController" must {
-    "return OK status with application.raml in the body" in {
-      val result = controller.raml("1.0", "application.raml")(FakeRequest("GET", "/api/conf/1.0/application.raml"))
+    "return OK status with application.yaml in the body" in {
+      val result = controller.yaml("1.0", "application.yaml")(FakeRequest("GET", "/api/conf/1.0/application.yaml"))
       status(result) mustBe OK
     }
     "return a Json definition" in {
