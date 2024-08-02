@@ -1,8 +1,5 @@
-import de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport.automateHeaderSettings
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSettings
 import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 lazy val appName = "marriage-allowance-des-stub"
 
@@ -11,7 +8,7 @@ ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = (project in file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .settings(
     scalaSettings,
     defaultSettings(),
