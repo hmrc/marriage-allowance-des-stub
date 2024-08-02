@@ -6,16 +6,14 @@ import uk.gov.hmrc.versioning.SbtGitVersioning
 
 lazy val appName = "marriage-allowance-des-stub"
 
+
+ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / majorVersion := 0
+
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
-  .configs(IntegrationTest)
   .settings(
-    integrationTestSettings(),
-    headerSettings(IntegrationTest),
-    automateHeaderSettings(IntegrationTest),
     scalaSettings,
-    scalaVersion := "2.13.12",
-    majorVersion := 0,
     defaultSettings(),
     routesImport += "controllers.Binders._",
     name := appName,
@@ -44,3 +42,8 @@ lazy val microservice = (project in file("."))
 coverageMinimumStmtTotal := 17.27
 coverageFailOnMinimum := true
 coverageExcludedPackages := "<empty>;.*definition.*;prod.*;testOnlyDoNotUseInAppConf.*;app.*;uk.gov.hmrc.BuildInfo;.*Routes.*;.*config.*;"
+
+val it: Project = project.in(file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings())
