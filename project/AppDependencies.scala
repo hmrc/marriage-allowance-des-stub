@@ -3,14 +3,14 @@ import play.sbt.PlayImport.ws
 
 object AppDependencies {
 
-  private val hmrcMongoVersion = "2.6.0"
-  private val bootstrapVersion = "9.16.0"
+  private val hmrcMongoVersion = "2.10.0"
+  private val bootstrapVersion = "10.4.0"
   private val playSuffix = "play-30"
 
   lazy val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc"          %% s"bootstrap-backend-$playSuffix" % bootstrapVersion,
-    "uk.gov.hmrc"          %% s"domain-$playSuffix"            % "12.1.0",
+    "uk.gov.hmrc"          %% s"domain-$playSuffix"            % "13.0.0",
     "uk.gov.hmrc.mongo"    %% s"hmrc-mongo-$playSuffix"        % hmrcMongoVersion
   )
 
