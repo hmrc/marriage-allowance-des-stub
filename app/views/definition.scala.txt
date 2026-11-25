@@ -10,7 +10,7 @@
     "versions": [
       {
         "version": "1.0",
-        "status": "BETA",
+        "status": "STABLE",
         "access": "PUBLIC"
       }
     ]
